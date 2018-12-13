@@ -1,4 +1,4 @@
-﻿﻿! function () {
+! function () {
     return function n(e, t, i) {
 
         function a(r, s) {
@@ -624,6 +624,7 @@
                     fragGrenadeColor: 16711680,
                     smokeGrenadeAlpha: .1,
                     defaultFragGrenadeEnabled: false,
+                    barrelRecolor: true,
                     autoAim: {
                         enabled: true,
                         forwardFiringCoeff: 1,
@@ -633,7 +634,9 @@
                         restirctions: false,
                         detectOnDifferentLevels: false,
                         enemyExtendedInfo: true,
-                        showEnemiesActions: true
+                        showEnemiesActions: true,
+                        rightClickToggle: false,
+                        rightClickSwitch: true
                     },
                     autoLoot: {
                         enabled: true,
@@ -678,17 +681,19 @@
                         enabled: true
                     },
                     autoDodge: {
-                        enabled: false
+                        enabled: true
+                    },
+                    autoSwitch: {
+                        enabled: true
+                    },
+                    streamerMode:{
+                        enabled:true
                     }
                 }), r.scope = options.smokeGrenadeAlpha, o.scope = function () {};
-                //*************** ADD NEW VARIABLES HERE ***************\\
-                options.autoSwitch = {}
-                options.autoSwitch.enabled = true
-                options.streamerMode = {}
-                options.streamerMode.enabled = false
-                //*************** END VARIABLES HERE ***************\\
+                // **Exports**
                 var p = exports.ceee80d9.exports.Defs,
                     bullets = exports["989ad62a"].exports.bullets,
+                    tracerColors = exports["989ad62a"].exports.tracerColors,
                     u = exports["989ad62a"].exports.player,
                     items = exports["989ad62a"].exports.items,
                     bagSizes = exports["989ad62a"].exports.bagSizes,
@@ -697,24 +702,54 @@
                     y = exports.e5d16b4d.exports.et,
                     playerbarn = exports.a508b62a.exports.Ie,
                     lootBarn = exports.a48f3bb2.exports.He,
-                    h = exports.c73dee75.exports.Ee,
+                    bulletBarn = exports.c73dee75.exports.Ee,
                     uiModel = exports.d3da5587.exports.Qe,
                     keys = exports["4b8d140f"].exports.Key;
-                // console.log(e.e5d16b4d.exports, e.a508b62a.exports, e.a48f3bb2.exports, e.c73dee75.exports, e.d3da5587.exports);
+
+                exports["946c898d"].exports.Sounds.hits.player_bullet_hit_01.name = 'audio/hits/pan_bullet_hit_01.mp3';
+
+                Object.keys(bullets).forEach(function (key) {
+                    exports["989ad62a"].exports.bullets[key].tracerWidth += 0.1;
+                });
+
+                // Make 9mm bullets yellow
+                exports["989ad62a"].exports.tracerColors["9mm"].regular = 16756224;
+                exports["989ad62a"].exports.tracerColors["9mm"].saturated = 16756224;
+
+                // Make 7.62mm bullets blue
+                exports["989ad62a"].exports.tracerColors["762mm"].regular = 26367;
+                exports["989ad62a"].exports.tracerColors["762mm"].saturated = 26367;
+
+                // Make 12gauge bullets red
+                exports["989ad62a"].exports.tracerColors["12gauge"].regular = 16711680;
+                exports["989ad62a"].exports.tracerColors["12gauge"].saturated = 16711680;
+
+                // Make 556mm bullets green
+                exports["989ad62a"].exports.tracerColors["556mm"].regular = 237056;
+                exports["989ad62a"].exports.tracerColors["556mm"].saturated = 237056;
+
+                // console.log( exports.e5d16b4d.exports );
+                // console.log( exports.a508b62a.exports );
+                // console.log( exports.a48f3bb2.exports );
+                // console.log( exports.c73dee75.exports );
+                // console.log( exports.d3da5587.exports );
+
                 setInterval(function () {
                     game.scope
                 }, 2e3);
                 /*
                 this.console.log(exports)
-                /*
-                setInterval(function () {
-                    console.log(game.scope)
+                this.console.log(options)
+
+                setInterval(function() {
+                    //console.log(game.scope)
 
                 }, 2000)
                 //*/
                 //start menu help
                 var help = this.document.getElementById("start-help")
-                help.innerHTML += `<b>SurvivHacks</b><br>
+                help.innerHTML += `
+                <b>SurvivHacks</b><br>
                 <ul>
                 <li>You can shoot on space key.</li>
                 <li>Auto loot and auto opening door added.</li>
@@ -724,15 +759,15 @@
                 <li>Emotes are available after pressing the B key(instead of right mouse key).</li>
                 <li>If you need to temporary disable auto aim, just hold Left shift key.</li>
                 <li> Now the auto aim will aim for enemy, closest to mouse pointer</li>
-                </ul>`
-                this.console.log(help)
+                </ul>
+                `
                 var w = null,
                     z = null,
                     k = null,
                     I = null,
                     C = null,
                     E = null,
-                    B = null,
+                    aaNicknameVisCb = null,
                     aaForwardFiringCoeffCb = null,
                     aaSmoothLevelCb = null,
                     aaRestirctionAngleCb = null,
@@ -740,10 +775,13 @@
                     aaDetectOnDifferentLevels = null,
                     aaEnemyExtendedInfo = null,
                     aaShowEnemiesActions = null,
-                    F = null,
-                    j = null,
-                    U = null,
-                    N = null,
+                    aaRightClickToggle = null,
+                    aaRightClickSwitch = null,
+                    alGetItemsFromSlotCb = null,
+                    alPrefListCb = null,
+                    alSafeDistanceCb = null,
+                    alDropDelayCb = null,
+                    _barrelRecolorCb = null,
                     X = null,
                     V = null,
                     G = false;
@@ -762,73 +800,126 @@
                     vn && !Q() ? Tn() : Q() && !G ? xn() : vn || Q() || !G || (G = false)
                 }, 500);
 
-
-
+                var filter = function(obj, filter){
+                    let key, keys = []
+                    for (key in obj){
+                        if (obj.hasOwnProperty(key) && filter.test(key)){
+                            keys.push(key)
+                    }
+                    }
+                    return keys
+                }
+                filter(p, /tree/).forEach(function (e) {
+                    p[e].img.alpha = options.particlesTransparency
+                })
+                filter(p, /bush/).forEach(function (e) {
+                    p[e].img.alpha = options.particlesTransparency
+                })
+                filter(p, /stone/).forEach(function (e) {
+                    p[e].img.alpha = options.particlesTransparency
+                })
+                filter(p, /table/).forEach(function (e) {
+                    p[e].img.alpha = options.particlesTransparency
+                })
                 var Y = y.prototype.l;
                 y.prototype.l = function () {
-                    this.options || function () {
-                        this.options = {}, this.__defineSetter__("emoteMouseTriggered", function (n) {
-                            this.options.emoteTriggered = n
-                        }), this.__defineGetter__("emoteMouseTriggered", function () {
-                            var e = game.scope[obfuscate.camera];
-                            return this.emoteScreenPos = {
-                                x: e.screenWidth / 2,
-                                y: e.screenHeight / 2
-                            }, this.options.emoteTriggered
+                        this.options || function () {
+                            this.options = {}, this.__defineSetter__("emoteMouseTriggered", function (n) {
+                                this.options.emoteTriggered = n
+                            }), this.__defineGetter__("emoteMouseTriggered", function () {
+                                var e = game.scope[obfuscate.camera];
+                                return this.emoteScreenPos = {
+                                    x: e.screenWidth / 2,
+                                    y: e.screenHeight / 2
+                                }, this.options.emoteTriggered
+                            })
+                        }.call(this), Y.apply(this, arguments)
+                    },
+
+                    X = items.frag.worldImg.tint, V = items.frag.worldImg.scale, items.frag.worldImg.tint = options.fragGrenadeColor, items.frag.worldImg.scale = options.fragGrenadeSize, Object.keys(p).forEach(function (n) {
+                        p[n].ceiling && p[n].ceiling.imgs.forEach(function (n) {
+                            n.alpha = options.ceilingTransparency
                         })
-                    }.call(this), Y.apply(this, arguments)
-                }, X = items.frag.worldImg.tint, V = items.frag.worldImg.scale, items.frag.worldImg.tint = options.fragGrenadeColor, items.frag.worldImg.scale = options.fragGrenadeSize, Object.keys(p).forEach(function (n) {
-                    p[n].ceiling && p[n].ceiling.imgs.forEach(function (n) {
-                        n.alpha = options.ceilingTransparency
-                    })
-                }), p.bush_01.img.alpha = options.particlesTransparency, p.bush_02.img.alpha = options.particlesTransparency, p.bush_03.img.alpha = options.particlesTransparency, p.bush_04.img.alpha = options.particlesTransparency, p.bush_05.img.alpha = options.particlesTransparency, p.bush_06.img.alpha = options.particlesTransparency, p.stone_02.img.alpha = options.particlesTransparency, p.tree_01.img.alpha = options.particlesTransparency, p.tree_02.img.alpha = options.particlesTransparency, p.tree_03.img.alpha = options.particlesTransparency, p.tree_06.img.alpha = options.particlesTransparency, p.tree_07.img.alpha = options.particlesTransparency, p.tree_08.img.alpha = options.particlesTransparency, p.tree_08b.img.alpha = options.particlesTransparency, p.tree_08c.img.alpha = options.particlesTransparency, p.tree_09.img.alpha = options.particlesTransparency, p.table_02.img.alpha = options.particlesTransparency, p.table_01.img.alpha = options.particlesTransparency, w = function (n) {
-                    options.particlesTransparency = n, p.bush_01.img.alpha = n, p.bush_02.img.alpha = n, p.bush_03.img.alpha = n, p.bush_04.img.alpha = n, p.bush_05.img.alpha = n, p.bush_06.img.alpha = n, p.stone_02.img.alpha = n, p.tree_01.img.alpha = n, p.tree_02.img.alpha = n, p.tree_03.img.alpha = n, p.tree_06.img.alpha = n, p.tree_07.img.alpha = n, p.tree_08.img.alpha = n, p.tree_08b.img.alpha = n, p.tree_08c.img.alpha = n, p.tree_09.img.alpha = n, p.table_01.img.alpha = n, p.table_02.img.alpha = n
-                }, z = function (n) {
-                    options.ceilingTransparency = n, Object.keys(p).forEach(function (e) {
-                        p[e].ceiling && p[e].ceiling.imgs.forEach(function (e) {
-                            e.alpha = n
+                    }),
+                    w = function (n) {
+                        filter(p, /tree/).forEach(function (e) {
+                            p[e].img.alpha = n
                         })
-                    })
-                }, k = function (n) {
-                    options.bigMapTransparency = n, bigMapManager.setBigMapTransparency(n)
-                }, I = function (n, e) {
-                    options.fragGrenadeSize = n, options.fragGrenadeColor = e, items.frag.worldImg.tint = e, items.frag.worldImg.scale = n
-                }, E = function (n) {
-                    options.smokeGrenadeAlpha = parseFloat(n), smokeAlphaManager.setSmokeAlpha(options.smokeGrenadeAlpha)
-                }, C = function () {
-                    return options.fragGrenadeSize = V, options.fragGrenadeColor = X, items.frag.worldImg.scale = V, items.frag.worldImg.tint = X, {
-                        defaultFragGrenadeScale: V,
-                        defaultFragGrenadeTint: X
-                    }
-                };
+                        filter(p, /bush/).forEach(function (e) {
+                            p[e].img.alpha = n
+                        })
+                        filter(p, /stone/).forEach(function (e) {
+                            p[e].img.alpha = n
+                        })
+                        filter(p, /table/).forEach(function (e) {
+                            p[e].img.alpha = n
+                        })
+                    }, z = function (n) {
+                        options.ceilingTransparency = n, Object.keys(p).forEach(function (e) {
+                            p[e].ceiling && p[e].ceiling.imgs.forEach(function (e) {
+                                e.alpha = n
+                            })
+                        })
+                    }, k = function (n) {
+                        options.bigMapTransparency = n, bigMapManager.setBigMapTransparency(n)
+                    }, I = function (n, e) {
+                        options.fragGrenadeSize = n, options.fragGrenadeColor = e, items.frag.worldImg.tint = e, items.frag.worldImg.scale = n
+                    }, E = function (n) {
+                        options.smokeGrenadeAlpha = parseFloat(n), smokeAlphaManager.setSmokeAlpha(options.smokeGrenadeAlpha)
+                    }, C = function () {
+                        return options.fragGrenadeSize = V, options.fragGrenadeColor = X, items.frag.worldImg.scale = V, items.frag.worldImg.tint = X, {
+                            defaultFragGrenadeScale: V,
+                            defaultFragGrenadeTint: X
+                        }
+                    };
                 var H = function () {
                     autoAim.isBinded() && options.autoAim.enabled && (autoAimUnbind(), autoAimBind())
                 };
-                B = function () {
-                    options.autoAim.targetEnemyNicknameVisibility = !options.autoAim.targetEnemyNicknameVisibility, autoAim.setTargetEnemyNicknameVisibility(options.autoAim.targetEnemyNicknameVisibility), H()
-                }, aaForwardFiringCoeffCb = function (n) {
-                    options.autoAim.forwardFiringCoeff = parseFloat(n), autoAim.setForwardFiringCoeff(options.autoAim.forwardFiringCoeff), H()
-                }, aaSmoothLevelCb = function (n) {
-                    options.autoAim.smoothLevel = parseInt(n), autoAim.setSmoothLevel(options.autoAim.smoothLevel), H()
-                }, aaRestirctionAngleCb = function (n) {
-                    options.autoAim.restirctionAngle = parseInt(n), autoAim.setRestirctionAngle(options.autoAim.restirctionAngle), H()
-                }, aaRestrictionsCb = function () {
-                    options.autoAim.restirctions = !options.autoAim.restirctions, autoAim.setRestirctions(options.autoAim.restirctions), H()
-                }, aaDetectOnDifferentLevels = function () {
-                    options.autoAim.detectOnDifferentLevels = !options.autoAim.detectOnDifferentLevels, autoAim.setDetectOnDifferentLevels(options.autoAim.detectOnDifferentLevels), H()
-                }, aaEnemyExtendedInfo = function () {
-                    options.autoAim.enemyExtendedInfo = !options.autoAim.enemyExtendedInfo, autoAim.setEnemyExtendedInfo(options.autoAim.enemyExtendedInfo), H()
-                }, aaShowEnemiesActions = function () {
-                    options.autoAim.showEnemiesActions = !options.autoAim.showEnemiesActions, autoAim.setShowEnemiesActions(options.autoAim.showEnemiesActions), H()
-                }, F = function (n) {
-                    return autoLoot.getItemsFromSlot(n)
-                }, j = function (n, e) {
-                    1 === n ? options.autoLoot.autoPickUp.weapon1 = e : 2 === n ? options.autoLoot.autoPickUp.weapon2 = e : 3 === n ? options.autoLoot.autoPickUp.weapon3 = e : 5 === n && (options.autoLoot.autoPickUp.skin = e), autoLoot.setAutoPickUp(options.autoLoot.autoPickUp)
-                }, U = function (n) {
-                    options.autoLoot.safeDistance = n, autoLoot.setSafeDistance(options.autoLoot.safeDistance)
-                }, N = function (n) {
-                    options.autoLoot.dropDelay = n, autoLoot.setDropDelay(options.autoLoot.dropDelay)
-                };
+                aaNicknameVisCb = function () {
+                        options.autoAim.targetEnemyNicknameVisibility = !options.autoAim.targetEnemyNicknameVisibility, autoAim.setTargetEnemyNicknameVisibility(options.autoAim.targetEnemyNicknameVisibility), H()
+                    }, aaForwardFiringCoeffCb = function (n) {
+                        options.autoAim.forwardFiringCoeff = parseFloat(n), autoAim.setForwardFiringCoeff(options.autoAim.forwardFiringCoeff), H()
+                    }, aaSmoothLevelCb = function (n) {
+                        options.autoAim.smoothLevel = parseInt(n), autoAim.setSmoothLevel(options.autoAim.smoothLevel), H()
+                    }, aaRestirctionAngleCb = function (n) {
+                        options.autoAim.restirctionAngle = parseInt(n), autoAim.setRestirctionAngle(options.autoAim.restirctionAngle), H()
+                    }, aaRestrictionsCb = function () {
+                        options.autoAim.restirctions = !options.autoAim.restirctions, autoAim.setRestirctions(options.autoAim.restirctions), H()
+                    }, aaDetectOnDifferentLevels = function () {
+                        options.autoAim.detectOnDifferentLevels = !options.autoAim.detectOnDifferentLevels, autoAim.setDetectOnDifferentLevels(options.autoAim.detectOnDifferentLevels), H()
+                    }, aaEnemyExtendedInfo = function () {
+                        options.autoAim.enemyExtendedInfo = !options.autoAim.enemyExtendedInfo, autoAim.setEnemyExtendedInfo(options.autoAim.enemyExtendedInfo), H()
+                    }, aaShowEnemiesActions = function () {
+                        options.autoAim.showEnemiesActions = !options.autoAim.showEnemiesActions, autoAim.setShowEnemiesActions(options.autoAim.showEnemiesActions), H()
+                    }, aaRightClickToggle = function () {
+                        options.autoAim.rightClickToggle = !options.autoAim.rightClickToggle, options.autoAim.rightClickSwitch = !options.autoAim.rightClickToggle, autoAim.setRightClickToggle(options.autoAim.rightClickToggle), H()
+                    }, aaRightClickSwitch = function () {
+                        options.autoAim.rightClickSwitch = !options.autoAim.rightClickSwitch, options.autoAim.rightClickToggle = !options.autoAim.rightClickSwitch, autoAim.setRightClickSwitch(options.autoAim.rightClickSwitch), H()
+                    }, alGetItemsFromSlotCb = function (n) {
+                        return autoLoot.getItemsFromSlot(n)
+                    }, alPrefListCb = function (n, e) {
+                        1 === n ? options.autoLoot.autoPickUp.weapon1 = e : 2 === n ? options.autoLoot.autoPickUp.weapon2 = e : 3 === n ? options.autoLoot.autoPickUp.weapon3 = e : 5 === n && (options.autoLoot.autoPickUp.skin = e), autoLoot.setAutoPickUp(options.autoLoot.autoPickUp)
+                    }, alSafeDistanceCb = function (n) {
+                        options.autoLoot.safeDistance = n, autoLoot.setSafeDistance(options.autoLoot.safeDistance)
+                    }, alDropDelayCb = function (n) {
+                        options.autoLoot.dropDelay = n, autoLoot.setDropDelay(options.autoLoot.dropDelay)
+                    },
+                    _barrelRecolorCb = function (n = false) {
+                        var red_barrel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAYAAADnRuK4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiNjc0Y2YwMS00NzdiLTAwNDYtYjk4MS01MmRmNjQ3YTVjOTEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MkZCRkQ2RjdGMEIxMTFFODgwQzFDOEZENDY1NUUwMTAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MkZCRkQ2RjZGMEIxMTFFODgwQzFDOEZENDY1NUUwMTAiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OTU0OTVhZDQtOTg2NC1lMjQ2LTg4YjctYzc3OGNlZTIxYzBiIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6MGVkMjlhZTQtZjBhZi0xMWU4LWI2M2Mt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';
+
+                        if (!n) {
+                            options.barrelRecolor ? options.barrelRecolor = false : options.barrelRecolor = true;
+                        }
+
+                        if (options.barrelRecolor) {
+                            p.barrel_01.img.sprite = red_barrel;
+                        } else {
+                            p.barrel_01.img.sprite = 'map-barrel-01.img';
+                        }
+                    };
+
+                _barrelRecolorCb(true);
+
                 var autoAimBind = function () {
                         autoAim.bind({
                             targetEnemyNicknameVisibility: options.autoAim.targetEnemyNicknameVisibility,
@@ -838,7 +929,9 @@
                             restirctions: options.autoAim.restirctions,
                             detectOnDifferentLevels: options.autoAim.detectOnDifferentLevels,
                             enemyExtendedInfo: options.autoAim.enemyExtendedInfo,
-                            showEnemiesActions: options.autoAim.showEnemiesActions
+                            showEnemiesActions: options.autoAim.showEnemiesActions,
+                            rightClickToggle: options.autoAim.rightClickToggle,
+                            rightClickSwitch: options.autoAim.rightClickSwitch
                         })
                     },
                     autoAimUnbind = function () {
@@ -924,7 +1017,7 @@
                         bullets: bullets,
                         items: items
                     }),
-                    mn = scripts.autoDodge(obfuscate, game, {
+                    autoDodge = scripts.autoDodge(obfuscate, game, {
                         bulletBarn: h,
                         player: u,
                         key: keys
@@ -942,10 +1035,10 @@
                     An = function () {
                         window.addEventListener("keydown", fn), window.addEventListener("keyup", bn), options.autoAim.enabled && !autoAim.isBinded() && autoAimBind(), options.autoLoot.enabled && !autoLoot.isBinded() && autoLootBind(), options.autoHeal.enabled && !autoHeal.isBinded() && autoHeal.bind(), options.autoSwitch.enabled && !autoSwitch.isBinded() && autoSwitch.bind(), options.streamerMode.enabled && !streamerMode.isBinded() && streamerMode.bind(), options.autoOpeningDoors.enabled && !autoOpeningDoors.isBinded() && autoOpeningDoors.bind(), bigMapManager.isBinded() || bigMapManager.bind(options.bigMapTransparency), options.grenadeTimer.enabled && !grenadeTimer.isBinded() && grenadeTimer.bind(), options.laserPointer.enabled && !laserPointer.isBinded() && laserPointer.bind(), options.linesToPlayers.enabled && !linesToPlayers.isBinded() && linesToPlayers.bind(), options.autoFire.enabled && !autoFire.isBinded() && autoFire.bind(), options.zoomRadiusManager.enabled && !zoomRadiusManager.isBinded() && zoomRadiusManager.bind(), smokeAlphaManager.isBinded() || smokeAlphaManager.bind({
                             smokeAlpha: options.smokeGrenadeAlpha
-                        }), options.fpsCounter.enabled && !fpsCounter.isBinded() && fpsCounter.bind(), options.airDropTracking.enabled && !airDropTracking.isBinded() && airDropTracking.bind(), options.tiggerBot.enabled && !triggerBot.isBinded() && triggerBot.bind(), options.autoDodge.enabled && !mn.isBinded() && mn.bind(), window.events.bind()
+                        }), options.fpsCounter.enabled && !fpsCounter.isBinded() && fpsCounter.bind(), options.airDropTracking.enabled && !airDropTracking.isBinded() && airDropTracking.bind(), options.tiggerBot.enabled && !triggerBot.isBinded() && triggerBot.bind(), options.autoDodge.enabled && !autoDodge.isBinded() && autoDodge.bind(), window.events.bind()
                     },
                     yn = function () {
-                        window.removeEventListener("keydown", fn), window.removeEventListener("keyup", bn), autoAim.isBinded() && autoAimUnbind(), autoLoot.isBinded() && autoLootUnbind(), autoHeal.isBinded() && autoHeal.unbind(), autoSwitch.isBinded() && autoSwitch.unbind(), streamerMode.isBinded() && streamerMode.unbind(), autoOpeningDoors.isBinded() && autoOpeningDoors.unbind(), bigMapManager.isBinded() && bigMapManager.unbind(), grenadeTimer.isBinded() && grenadeTimer.unbind(), laserPointer.isBinded() && laserPointer.unbind(), linesToPlayers.isBinded() && linesToPlayers.unbind(), autoFire.isBinded() && autoFire.unbind(), zoomRadiusManager.isBinded() && zoomRadiusManager.unbind(), smokeAlphaManager.isBinded() && smokeAlphaManager.unbind(), fpsCounter.isBinded() && fpsCounter.unbind(), airDropTracking.isBinded() && airDropTracking.unbind(), triggerBot.isBinded() && triggerBot.unbind(), mn.isBinded() && mn.unbind(), window.events.unbind()
+                        window.removeEventListener("keydown", fn), window.removeEventListener("keyup", bn), autoAim.isBinded() && autoAimUnbind(), autoLoot.isBinded() && autoLootUnbind(), autoHeal.isBinded() && autoHeal.unbind(), autoSwitch.isBinded() && autoSwitch.unbind(), streamerMode.isBinded() && streamerMode.unbind(), autoOpeningDoors.isBinded() && autoOpeningDoors.unbind(), bigMapManager.isBinded() && bigMapManager.unbind(), grenadeTimer.isBinded() && grenadeTimer.unbind(), laserPointer.isBinded() && laserPointer.unbind(), linesToPlayers.isBinded() && linesToPlayers.unbind(), autoFire.isBinded() && autoFire.unbind(), zoomRadiusManager.isBinded() && zoomRadiusManager.unbind(), smokeAlphaManager.isBinded() && smokeAlphaManager.unbind(), fpsCounter.isBinded() && fpsCounter.unbind(), airDropTracking.isBinded() && airDropTracking.unbind(), triggerBot.isBinded() && triggerBot.unbind(), autoDodge.isBinded() && autoDodge.unbind(), window.events.unbind()
                     },
                     gn = function () {
                         return !game.scope || !!game.scope.gameOver
@@ -970,15 +1063,18 @@
                     autoAimEnemyExtendedInfoCb: aaEnemyExtendedInfo,
                     autoAimForwardFiringCoeffCb: aaForwardFiringCoeffCb,
                     autoAimDetectOnDifferentLevelsCb: aaDetectOnDifferentLevels,
-                    autoAimTargetEnemyNicknameVisibilityCb: B,
+                    autoAimTargetEnemyNicknameVisibilityCb: aaNicknameVisCb,
                     autoAimShowEnemiesActionsCb: aaShowEnemiesActions,
+                    autoAimRightClickToggleCb: aaRightClickToggle,
+                    autoAimRightClickSwitchCb: aaRightClickSwitch,
+                    barrelRecolorCb: _barrelRecolorCb,
                     autoLootEnableCb: function () {
                         options.autoLoot.enabled ? (q(autoLoot) && autoLootUnbind(), options.autoLoot.enabled = false) : options.autoLoot.enabled || (!q(autoLoot) && Q() && autoLootBind(), options.autoLoot.enabled = true)
                     },
-                    getAutoLootAutoPickUpCb: F,
-                    setAutoLootAutoPickUpCb: j,
-                    autoLootSafeDistanceCb: U,
-                    autoLootDropDelayCb: N,
+                    getAutoLootAutoPickUpCb: alGetItemsFromSlotCb,
+                    setAutoLootAutoPickUpCb: alPrefListCb,
+                    autoLootSafeDistanceCb: alSafeDistanceCb,
+                    autoLootDropDelayCb: alDropDelayCb,
                     airDropTrackingEnableCb: function () {
                         options.airDropTracking.enabled ? (q(airDropTracking) && airDropTracking.unbind(), options.airDropTracking.enabled = false) : options.airDropTracking.enabled || (!q(airDropTracking) && Q() && airDropTracking.bind(), options.airDropTracking.enabled = true)
                     },
@@ -1016,7 +1112,7 @@
                         options.tiggerBot.enabled ? (q(triggerBot) && triggerBot.unbind(), options.tiggerBot.enabled = false) : options.tiggerBot.enabled || (!q(triggerBot) && Q() && triggerBot.bind(), options.tiggerBot.enabled = true)
                     },
                     autoDodgeEnableCb: function () {
-                        options.autoDodge.enabled ? (q(mn) && mn.unbind(), options.autoDodge.enabled = false) : options.autoDodge.enabled || (!q(mn) && Q() && mn.bind(), options.autoDodge.enabled = true)
+                        options.autoDodge.enabled ? (q(autoDodge) && autoDodge.unbind(), options.autoDodge.enabled = false) : options.autoDodge.enabled || (!q(autoDodge) && Q() && autoDodge.bind(), options.autoDodge.enabled = true)
                     },
                     storeOptionsCb: function () {
                         c(l, options)
@@ -1189,37 +1285,37 @@
     12: [function (n, e, t) {
         "use strict";
         e.exports = {
-            menu: "we", 
+            menu: "xe",
             camera: "N",
             bullets: "De",
             planes: "je",
-            activeId: "me",
+            activeId: "ct",
             targetZoom: "f",
             objectCreator: "st",
             pieTimer: "Ze",
-            map: "Pe",
+            map: "Te",
             input: {
-                main: "ye",
+                main: "ge",
                 input: "input",
                 mousePressed: "$"
             },
             activePlayer: {
-                main: "ct",
-                netData: "q",
-                localData: "U"
+                main: "mt",
+                netData: "U",
+                localData: "q"
             },
             playerBarn: {
                 main: "Ae",
-                players: "Pt"
+                players: "At"
             },
             lootBarn: {
                 main: "We",
-                itemf: "Mt",
+                itemf: "Tt",
                 lootPool: "it",
-                pool: "de"
+                pool: "pe"
             },
-            version: "1.0.777",
-            protocolVersion: 38
+            version: "1.1.006",
+            protocolVersion: 42
         }
     }, {}],
     13: [function (n, e, t) {
@@ -1293,7 +1389,7 @@
                 p = window.PIXI.Texture.fromImage("https://cdn.rawgit.com/zbot473/SurvivHacks/e0e08a8d/ChromeExtension/images/reload.svg"),
                 d = window.PIXI.Texture.fromImage("https://cdn.rawgit.com/zbot473/SurvivHacks/e0e08a8d/ChromeExtension/images/heal.svg");
             if (i && a && o) {
-                var u = function (t) {
+                var pressKey = function (t) {
                         var i = e.scope[n.input.main][n.input.input].keys;
                         i[t] || setTimeout(function () {
                             i[t] = true, setTimeout(function () {
@@ -1302,30 +1398,35 @@
                         }, 0)
                     },
                     //angle
-                    m = function (n, e, t, i) {
+                    calcuateAngle = function (n, e, t, i) {
                         var a = i - e,
                             o = t - n;
                         return Math.atan2(a, o)
                     },
                     //distance
-                    f = function (n, e, t, i) {
+                    calculateDistance = function (n, e, t, i) {
                         return Math.sqrt(Math.pow(n - t, 2) + Math.pow(e - i, 2))
                     },
-                    b = function () {
+                    getPos = function () {
                         return e.scope[n.activePlayer.main].pos
                     },
-                    A = function () {
+                    getScreenPos = function () {
                         return e.scope[n.input.main][n.input.input].mousePos
                     },
-                    y = function (n, e) {
+                    checkLayer = function (n, e) {
                         var t = true;
                         return l.detectOnDifferentLevels || n.layer == e.layer || 2 == e.layer || 2 == n.layer || 3 == e.layer || 3 == n.layer || (t = false), t
                     },
-                    g = function (n, e, t, i) {
+                    getTeam = function (n, e, t, i) {
                         return t.teamId == e || i == n
                     },
-                    v = function () {
+                    setPlayerNameStyle = function () {
                         s.player.nameText.visible = false, s.player.nameText.style.fontSize = 22, s.player.nameText.style.fill = "#00FFFF"
+                    },
+                    rightClickHandler = function () {
+                        if (e.scope[n.input.main][n.input.input].mouseButtons["2"] != undefined) {
+                            return !e.scope[n.input.main][n.input.input].mouseButtons["2"]
+                        }
                     },
                     h = null,
                     x = function () {
@@ -1333,7 +1434,7 @@
                         null != h && h != n && (h.visible = false, h = null), h = null != n ? n : null
                     },
                     T = function (t) {
-                        var o = b(),
+                        var o = getPos(),
                             r = {
                                 x: o.x + s.mouseRelPointPos.x,
                                 y: o.y + s.mouseRelPointPos.y
@@ -1344,13 +1445,14 @@
                             A = [],
                             y = [],
                             g = Object.keys(t);
-                        if (!g.length) return s.new && (s.new = false, l.targetEnemyNicknameVisibility && v(), window.aimTarget = null), x(), void I();
+                        if (!g.length) return s.new && (s.new = false, l.targetEnemyNicknameVisibility && setPlayerNameStyle(), window.aimTarget = null), x(), void I();
+
                         for (var h = 0; h < g.length; h++) {
                             var T = t[g[h]][n.activePlayer.netData].pos,
-                                w = f(o.x, o.y, T.x, T.y),
-                                k = f(r.x, r.y, T.x, T.y),
-                                C = m(o.x, o.y, T.x, T.y),
-                                E = Math.abs(C - m(o.x, o.y, r.x, r.y));
+                                w = calculateDistance(o.x, o.y, T.x, T.y),
+                                k = calculateDistance(r.x, r.y, T.x, T.y),
+                                C = calcuateAngle(o.x, o.y, T.x, T.y),
+                                E = Math.abs(C - calcuateAngle(o.x, o.y, r.x, r.y));
                             p.push(w), d.push(k), u.push(C), A.push(E), y.push(true)
                         }
                         var B, L = null;
@@ -1371,18 +1473,18 @@
                                     var p = 0,
                                         d = 1 / 0;
                                     p = e.scope[n.activePlayer.main].weapType && a[e.scope[n.activePlayer.main].weapType].bulletType ? i[a[e.scope[n.activePlayer.main].weapType].bulletType].speed * l.forwardFiringCoeff : 1e3;
-                                    for (var u = b(), A = {
+                                    for (var u = getPos(), A = {
                                             x: t.x,
                                             y: t.y
-                                        }, y = f(u.x, u.y, t.x, t.y), g = (t.x - r.x) / ((o - s + 1) / 1e3), v = (t.y - r.y) / ((o - s + 1) / 1e3), h = 0; h < 10; h++) d = y / p, A = {
+                                        }, y = calculateDistance(u.x, u.y, t.x, t.y), g = (t.x - r.x) / ((o - s + 1) / 1e3), v = (t.y - r.y) / ((o - s + 1) / 1e3), h = 0; h < 10; h++) d = y / p, A = {
                                         x: t.x + g * d,
                                         y: t.y + v * d
-                                    }, y = f(u.x, u.y, A.x, A.y);
+                                    }, y = calculateDistance(u.x, u.y, A.x, A.y);
                                     var x = e.scope[n.camera].screenWidth / 2,
                                         T = e.scope[n.camera].screenHeight / 2,
                                         w = T > x ? x : T;
                                     w = Math.floor(w - 1);
-                                    var z = m(u.x, u.y, A.x, A.y);
+                                    var z = calcuateAngle(u.x, u.y, A.x, A.y);
                                     return {
                                         x: x + w * Math.cos(z),
                                         y: T - w * Math.sin(z)
@@ -1391,8 +1493,37 @@
                                     x: 0,
                                     y: 0
                                 }, h = 0; h < s.length; h++) s.averageTargetMousePosition.x += s[h].targetMousePosition.x, s.averageTargetMousePosition.y += s[h].targetMousePosition.y;
-                            s.averageTargetMousePosition.x /= s.length, s.averageTargetMousePosition.y /= s.length, l.targetEnemyNicknameVisibility && v(), s.player = t[g[L]], l.targetEnemyNicknameVisibility && (s.player.nameText.visible = true, s.player.nameText.style.fontSize = 100, s.player.nameText.style.fill = "#D50000"), window.aimTarget = s.player,
-                                function () {
+								
+								
+								var chest_level = t[g[L]][n.activePlayer.netData]['chest'];
+								var chest_int = 0;
+								
+								if ("" != chest_level) {
+									chest_int = parseInt(chest_level.slice(-2), 10);
+								}
+								
+								var helmet_level = t[g[L]][n.activePlayer.netData]['helmet'];
+								var helmet_int = 0;
+								
+								if ("" != helmet_level) {
+									helmet_int = parseInt(helmet_level.slice(-2), 10);
+								}
+
+								var enemy_name = t[g[L]].nameText._text;
+								
+								enemy_name = enemy_name.replace(" Lvl: 0", "");
+								enemy_name = enemy_name.replace(" Lvl: 1", "");
+								enemy_name = enemy_name.replace(" Lvl: 2", "");
+								enemy_name = enemy_name.replace(" Lvl: 3", "");
+								enemy_name = enemy_name.replace(" Lvl: 4", "");
+								enemy_name = enemy_name.replace(" Lvl: 5", "");
+								enemy_name = enemy_name.replace(" Lvl: 6", "");
+	
+								enemy_name = enemy_name + ' Lvl: ' + ( chest_int + helmet_int );
+								
+								
+                            s.averageTargetMousePosition.x /= s.length, s.averageTargetMousePosition.y /= s.length, l.targetEnemyNicknameVisibility && setPlayerNameStyle(), s.player = t[g[L]], l.targetEnemyNicknameVisibility && (s.player.nameText.visible = true, s.player.nameText.style.fontSize = 100, s.player.nameText.style.fill = "#D50000"), window.aimTarget = s.player, s.player.nameText._text = enemy_name,
+                                function() {
                                     var e = s.player,
                                         t = e[n.activePlayer.netData].dir;
                                     if (e && e[n.activePlayer.netData].dir) {
@@ -1537,10 +1668,12 @@
                         return false
                     },
                     M = function (t) {
+                        //console.log(op)
+                        //if (2 === t.button && !L() && op.autoAim.rightClickSwitch) {
                         if (2 === t.button && !L()) {
                             var i = e.scope[n.activePlayer.main];
-                            if (i.curWeapIdx) return void u("49");
-                            if (!i.curWeapIdx) return void u("50")
+                            if (i.curWeapIdx) return void pressKey("49");
+                            if (!i.curWeapIdx) return void pressKey("50")
                         }
                         if ((0 === t.button || 2 === t.button && !L()) && s.new) {
                             var a = e.scope[n.input.main][n.input.input],
@@ -1549,7 +1682,7 @@
                         } else E(t)
                     },
                     D = function (t) {
-                        var i = b(),
+                        var i = getPos(),
                             a = e.scope[n.camera].screenToPoint({
                                 x: t.clientX,
                                 y: t.clientY
@@ -1576,12 +1709,12 @@
                 return {
                     bind: function (t) {
                         var i, a, o, c = e.scope[n.input.main][n.input.input];
-                        i = t, l.targetEnemyNicknameVisibility = i.targetEnemyNicknameVisibility, l.forwardFiringCoeff = i.forwardFiringCoeff, l.smoothLevel = i.smoothLevel, l.restirctionAngle = i.restirctionAngle, l.restirctions = i.restirctions, l.detectOnDifferentLevels = i.detectOnDifferentLevels, l.enemyExtendedInfo = i.enemyExtendedInfo, l.showEnemiesActions = i.showEnemiesActions, s = function () {
+                        i = t, l.targetEnemyNicknameVisibility = i.targetEnemyNicknameVisibility, l.forwardFiringCoeff = i.forwardFiringCoeff, l.smoothLevel = i.smoothLevel, l.restirctionAngle = i.restirctionAngle, l.restirctions = i.restirctions, l.detectOnDifferentLevels = i.detectOnDifferentLevels, l.enemyExtendedInfo = i.enemyExtendedInfo, l.showEnemiesActions = i.showEnemiesActions, l.rightClickToggle = i.rightClickToggle, l.rightClickSwitch = i.rightClickSwitch, s = function () {
                             for (var n = [], e = 0; e < l.smoothLevel; e++) n.push({
                                 distance: null,
                                 radianAngle: null,
-                                pos: A(),
-                                targetMousePosition: A(),
+                                pos: getScreenPos(),
+                                targetMousePosition: getScreenPos(),
                                 timestamp: 0
                             });
                             return n.new = null, n.player = {
@@ -1628,6 +1761,12 @@
                     setShowEnemiesActions: function (n) {
                         l.showEnemiesActions = n
                     },
+                    setRightClickToggle: function (n) {
+                        l.rightClickToggle = n
+                    },
+                    setRightClickSwitch: function (n) {
+                        l.rightClickSwitch = n
+                    },
                     render: function () {
                         var t;
                         T(function () {
@@ -1636,7 +1775,13 @@
                             for (var i, a = e.scope[n.activeId], o = e.scope[n.playerBarn.main][n.playerBarn.players][a].teamId, r = Object.keys(e.scope[n.playerBarn.main][n.playerBarn.players]), s = e.scope[n.activePlayer.main], c = 0; c < r.length; c++) {
                                 var p = e.scope[n.objectCreator].idToObj[r[c]],
                                     d = e.scope[n.playerBarn.main][n.playerBarn.players][r[c]];
-                                p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || g(a, o, d, r[c]) || !y(s, p) || (t[r[c]] = p))
+                                // if (l.rightClickToggle) {
+                                // var clicked = rightClickHandler()
+                                // } else {
+                                // var clicked = false
+                                // }
+                                //p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || clicked || !checkLayer(s, p) || (t[r[c]] = p))
+                                p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || !checkLayer(s, p) || (t[r[c]] = p))
                             }
                             return t
                         }()), s.new && (t = s.averageTargetMousePosition, e.scope[n.input.main][n.input.input].mousePos = t)
@@ -1678,15 +1823,15 @@
                             ! function (n) {
                                 if (n.length)
                                     for (var e = l(), t = 0; t < n.length; t++) {
-                                        var i = {
-                                                x: e.x + n[t].intersectionOfCoordLines.x,
-                                                y: e.y + n[t].intersectionOfCoordLines.y
-                                            },
-                                            a = {
-                                                x: p(n[t].bullet.pos.x, n[t].bullet.pos.y, i.x, e.y),
-                                                y: p(n[t].bullet.pos.x, n[t].bullet.pos.y, e.x, i.y)
-                                            };
-                                        a.x < a.y ? Math.sign(n[t].intersectionOfCoordLines.x) < 0 ? s(o.D) : s(o.A) : Math.sign(n[t].intersectionOfCoordLines.y) < 0 ? s(o.W) : s(o.S)
+										var i = {
+												x: e.x + n[t].intersectionOfCoordLines.x,
+												y: e.y + n[t].intersectionOfCoordLines.y
+											},
+											a = {
+												x: p(n[t].bullet.pos.x, n[t].bullet.pos.y, i.x, e.y),
+												y: p(n[t].bullet.pos.x, n[t].bullet.pos.y, e.x, i.y)
+											};
+										a.x < a.y ? Math.sign(n[t].intersectionOfCoordLines.x) < 0 ? s(o.D) : s(o.A) : Math.sign(n[t].intersectionOfCoordLines.y) < 0 ? s(o.W) : s(o.S);
                                     }
                             }(function () {
                                 for (var t, i, o, r, s = [], p = l(), d = a.maxVisualRadius * Math.sqrt(2), u = e.scope[n.activePlayer.main], m = e.scope[n.bullets].bullets, f = 0; f < m.length; f++)
@@ -1820,7 +1965,7 @@
                                 if (o[s] && !o[s][n.activePlayer.netData].dead && !o[s][n.activePlayer.netData].downed && t[s].teamId != i) return false
                             }
                             return true
-                        }() && !((o = e.scope[n.input.main][n.input.input].keys)[i.W] || o[i.D] || o[i.S] || o[i.A]) && ("Reloading" != (a = e.scope[n.menu].pieTimer).clientData.label || !a.active)) {
+                        }() && !((o = e.scope[n.input.main][n.input.input].keys)[i.W] || o[i.D] || o[i.S] || o[i.A]) && ("Reloading" != (a = e.scope[n.pieTimer]).clientData.label || !a.active)) {
                         var t = e.scope[n.activePlayer.main][n.activePlayer.localData];
                         if (t.health < 30 && t.inventory.healthkit > 0) return void r(i.Eight);
                         if (t.health < 70 && t.boost < 40 && t.inventory.bandage > 0) return void r(i.Seven);
@@ -2491,6 +2636,16 @@
                         },
                         tabId: 1
                     }, {
+                        type: "checkbox",
+                        description: "Barrel Recolor",
+                        inputProps: {
+                            value: "barrelRecolor"
+                        },
+                        callbacks: {
+                            value: "barrelRecolorCb"
+                        },
+                        tabId: 1
+                    }, {
                         type: "resetButton",
                         description: "Reset grenade properties",
                         callbacks: {
@@ -2512,7 +2667,7 @@
                         tabId: 1
                     }, {
                         type: "info",
-                        description: "AutoAim",
+                        description: "Auto Aim",
                         tabId: 1
                     }, {
                         type: "checkbox",
@@ -2567,7 +2722,30 @@
                             showOrHide: ["autoAimrestirctionAngle"]
                         },
                         tabId: 1
-                    }, {
+                    },
+                    // {
+                    // type: "checkbox",
+                    // description: "Right Click Toggle",
+                    // inputProps: {
+                    // value: "autoAim.rightClickToggle"
+                    // },
+                    // callbacks: {
+                    // value: "autoAimRightClickToggleCb"
+                    // },
+                    // tabId: 1
+                    // },
+                    // {
+                    // type: "checkbox",
+                    // description: "Switch Guns",
+                    // inputProps: {
+                    // value: "autoAim.rightClickSwitch"
+                    // },
+                    // callbacks: {
+                    // value: "autoAimRightClickSwitchCb"
+                    // },
+                    // tabId: 1
+                    // },
+                    {
                         type: "slider",
                         description: "Forward firing coeff",
                         inputProps: {
@@ -2614,7 +2792,7 @@
                         tabId: 1
                     }, {
                         type: "info",
-                        description: "AutoLoot",
+                        description: "Auto Loot",
                         tabId: 1
                     }, {
                         type: "slider",
@@ -2989,17 +3167,27 @@
                 a = t.items,
                 o = false;
             if (a) {
-                var r = function (n, e, t, i) {
+                var calculateDistance = function (n, e, t, i) {
                         return Math.sqrt(Math.pow(n - t, 2) + Math.pow(e - i, 2))
                     },
                     s = function (t) {
                         var pos = (u = e.scope[n.activePlayer.main]).pos,
                             objects = e.scope[n.objectCreator].idToObj,
-                            collidableObjects = Object.keys(objects).filter(function (n) {
-                                if (typeof objects[n].img == "string") {
-                                    return void 0 !== objects[n].collidable && objects[n].collidable || objects[n].img.includes("door") || objects[n].img.includes("stair")
+                            shootable = function (curObj) {
+                                if (curObj.collidable && curObj.collidable) {
+                                    if (curObj.isBush != undefined && curObj.isBush) {
+                                        return true
+                                    }
                                 } else {
-                                    return void 0 !== objects[n].collidable && objects[n].collidable
+                                    return false
+                                }
+                            },
+                            collidableObjects = Object.keys(objects).filter(function (n) {
+                                var curObj = objects[n]
+                                if (typeof curObj.img == "string") {
+                                    return void 1 == shootable(curObj) && !curObj.isDoor && !curObj.img.includes("stair")
+                                } else {
+                                    return void 1 == shootable(curObj)
                                 }
                             }, ),
                             p = [];
@@ -3019,11 +3207,17 @@
                             }(objects[n].collider.pos.x, objects[n].collider.pos.y, p.A.x, p.A.y, p.B.x, p.B.y) <= objects[n].collider.rad && (d = false))
                         });
                         var u = e.scope[n.activePlayer.main];
-                        d && !e.scope[n.menu].pieTimer.active && 3 !== u.curWeapIdx && function (n, e) {
-                            var t = r(n.pos.x, n.pos.y, e.pos.x, e.pos.y);
-                            if (n.weapType) {
-                                var o = a[n.weapType];
-                                if (isset(o.bulletType)) return t < i[o.bulletType].distance
+                        d && !e.scope[n.menu].pieTimer.active && 3 !== u.curWeapIdx && function (curPlayer, enemy) {
+                            var t = calculateDistance(curPlayer.pos.x, curPlayer.pos.y, enemy.pos.x, enemy.pos.y);
+                            if (curPlayer.weapType) {
+                                var o = a[curPlayer.weapType]
+                                if (isset(o.bulletType)) {
+                                    var inRange = t < i[o.bulletType].distance
+                                }
+                                var enoughAmmo = curPlayer[n.activePlayer.localData].weapons.filter(function (e) {
+                                    return e.name == curPlayer.weapType
+                                })[0].ammo > 0
+                                return enoughAmmo && inRange
                             }
                             return true
                         }(u, window.aimTarget) ? window.autoFire = true : window.autoFire = false
@@ -3190,7 +3384,7 @@
                             needtoReload2 = e.scope[n.activePlayer.main][n.activePlayer.localData].weapons["1"].ammo < gun2.maxReload,
                             reloading = false
                         if (needtoReload1 || needtoReload2) {
-                            // if (no enemy, not doing anything, not shooting and need to reload) then reload
+                            // if(no enemy, not doing anything, not shooting and need to reload) then reload
                             if (!enemy && curAction == 0 && !reloading && needtoReload1 && e.scope[n.activePlayer.main][n.activePlayer.localData].inventory[bullet1.tracerColor] > 0) {
                                 pressKey("49")
                                 pressKey("82")
@@ -3222,7 +3416,7 @@
                             //Perform switch
                             if (!(e.scope[n.activePlayer.main].curWeapIdx == 3 || e.scope[n.activePlayer.main].curWeapIdx == 4)) {
                                 if (Pref2 == Pref1) {
-                                    return null //do nothing 
+                                    return null //do nothing
                                 } else if (Pref2 > Pref1) {
                                     pressKey("50")
                                 } else {
