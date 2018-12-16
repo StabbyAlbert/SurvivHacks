@@ -1,4 +1,4 @@
-! function () {
+﻿! function () {
     return function n(e, t, i) {
 
         function a(r, s) {
@@ -625,6 +625,7 @@
                     smokeGrenadeAlpha: .1,
                     defaultFragGrenadeEnabled: false,
                     barrelRecolor: true,
+                    bulletRecolor: true,
                     autoAim: {
                         enabled: true,
                         forwardFiringCoeff: 1,
@@ -692,41 +693,42 @@
                 }), r.scope = options.smokeGrenadeAlpha, o.scope = function () {};
                 // **Exports**
                 var p = exports.ceee80d9.exports.Defs,
-                    bullets = exports["989ad62a"].exports.bullets,
-                    tracerColors = exports["989ad62a"].exports.tracerColors,
-                    u = exports["989ad62a"].exports.player,
-                    items = exports["989ad62a"].exports.items,
-                    bagSizes = exports["989ad62a"].exports.bagSizes,
-                    scopeZoomRadius = (exports["989ad62a"].exports.Input, exports["989ad62a"].exports.scopeZoomRadius.desktop),
-                    protocolVersion = exports["989ad62a"].exports.protocolVersion,
-                    y = exports.e5d16b4d.exports.et,
-                    playerbarn = exports.a508b62a.exports.Ie,
-                    lootBarn = exports.a48f3bb2.exports.He,
-                    bulletBarn = exports.c73dee75.exports.Ee,
-                    uiModel = exports.d3da5587.exports.Qe,
+                    mainExports = exports["989ad62a"].exports,
+                    bullets = mainExports.bullets,
+                    tracerColors = mainExports.tracerColors,
+                    u = mainExports.player,
+                    items = mainExports.items,
+                    bagSizes = mainExports.bagSizes,
+                    scopeZoomRadius = (mainExports.Input, mainExports.scopeZoomRadius.desktop),
+                    protocolVersion = mainExports.protocolVersion,
+                    y = exports.e5d16b4d.exports.$e,
+                    playerbarn = exports.a508b62a.exports.Ae,
+                    lootBarn = exports.a48f3bb2.exports.We,
+                    bulletBarn = exports.c73dee75.exports.De,
+                    uiModel = exports.d3da5587.exports.Je,
                     keys = exports["4b8d140f"].exports.Key;
 
                 exports["946c898d"].exports.Sounds.hits.player_bullet_hit_01.name = 'audio/hits/pan_bullet_hit_01.mp3';
 
                 Object.keys(bullets).forEach(function (key) {
-                    exports["989ad62a"].exports.bullets[key].tracerWidth += 0.1;
+                    bullets[key].tracerWidth += 0.1;
                 });
 
                 // Make 9mm bullets yellow
-                exports["989ad62a"].exports.tracerColors["9mm"].regular = 16756224;
-                exports["989ad62a"].exports.tracerColors["9mm"].saturated = 16756224;
+                tracerColors["9mm"].regular = 16756224;
+                tracerColors["9mm"].saturated = 16756224;
 
                 // Make 7.62mm bullets blue
-                exports["989ad62a"].exports.tracerColors["762mm"].regular = 26367;
-                exports["989ad62a"].exports.tracerColors["762mm"].saturated = 26367;
+                tracerColors["762mm"].regular = 26367;
+                tracerColors["762mm"].saturated = 26367;
 
                 // Make 12gauge bullets red
-                exports["989ad62a"].exports.tracerColors["12gauge"].regular = 16711680;
-                exports["989ad62a"].exports.tracerColors["12gauge"].saturated = 16711680;
+                tracerColors["12gauge"].regular = 16711680;
+                tracerColors["12gauge"].saturated = 16711680;
 
                 // Make 556mm bullets green
-                exports["989ad62a"].exports.tracerColors["556mm"].regular = 237056;
-                exports["989ad62a"].exports.tracerColors["556mm"].saturated = 237056;
+                tracerColors["556mm"].regular = 237056;
+                tracerColors["556mm"].saturated = 237056;
 
                 // console.log( exports.e5d16b4d.exports );
                 // console.log( exports.a508b62a.exports );
@@ -782,6 +784,7 @@
                     alSafeDistanceCb = null,
                     alDropDelayCb = null,
                     _barrelRecolorCb = null,
+                    _bulletRecolorCb = null,
                     X = null,
                     V = null,
                     G = false;
@@ -800,27 +803,28 @@
                     vn && !Q() ? Tn() : Q() && !G ? xn() : vn || Q() || !G || (G = false)
                 }, 500);
 
-                var filter = function(obj, filter){
+                var filter = function (obj, filter) {
                     let key, keys = []
-                    for (key in obj){
-                        if (obj.hasOwnProperty(key) && filter.test(key)){
+                    for (key in obj) {
+                        if (obj.hasOwnProperty(key) && filter.test(key)) {
                             keys.push(key)
-                    }
+                        }
                     }
                     return keys
                 }
                 filter(p, /tree/).forEach(function (e) {
-                    p[e].img.alpha = options.particlesTransparency
+                    if (p[e].img)
+                        p[e].img.alpha = options.particlesTransparency
                 })
                 filter(p, /bush/).forEach(function (e) {
-                    p[e].img.alpha = options.particlesTransparency
-                })
-                filter(p, /stone/).forEach(function (e) {
-                    p[e].img.alpha = options.particlesTransparency
+                    if (p[e].img)
+                        p[e].img.alpha = options.particlesTransparency
                 })
                 filter(p, /table/).forEach(function (e) {
-                    p[e].img.alpha = options.particlesTransparency
+                    if (p[e].img)
+                        p[e].img.alpha = options.particlesTransparency
                 })
+                p.stone_02.img.tint = options.particlesTransparency
                 var Y = y.prototype.l;
                 y.prototype.l = function () {
                         this.options || function () {
@@ -843,17 +847,18 @@
                     }),
                     w = function (n) {
                         filter(p, /tree/).forEach(function (e) {
-                            p[e].img.alpha = n
+                            if (p[e].img)
+                                p[e].img.alpha = options.particlesTransparency
                         })
                         filter(p, /bush/).forEach(function (e) {
-                            p[e].img.alpha = n
-                        })
-                        filter(p, /stone/).forEach(function (e) {
-                            p[e].img.alpha = n
+                            if (p[e].img)
+                                p[e].img.alpha = options.particlesTransparency
                         })
                         filter(p, /table/).forEach(function (e) {
-                            p[e].img.alpha = n
+                            if (p[e].img)
+                                p[e].img.alpha = options.particlesTransparency
                         })
+                        p.stone_02.img.tint = options.particlesTransparency
                     }, z = function (n) {
                         options.ceilingTransparency = n, Object.keys(p).forEach(function (e) {
                             p[e].ceiling && p[e].ceiling.imgs.forEach(function (e) {
@@ -916,8 +921,29 @@
                         } else {
                             p.barrel_01.img.sprite = 'map-barrel-01.img';
                         }
+                    }, _bulletRecolorCb = function () {
+                        options.bulletRecolor = !options.bulletRecolor
+                        if (options.bulletRecolor) { 
+                            // Make 9mm bullets yellow
+                            tracerColors["9mm"].regular = 16756224;
+                            tracerColors["9mm"].saturated = 16756224;
+        
+                            // Make 7.62mm bullets blue
+                            tracerColors["762mm"].regular = 26367;
+                            tracerColors["762mm"].saturated = 26367;
+        
+                            // Make 12gauge bullets red
+                            tracerColors["12gauge"].regular = 16711680;
+                            tracerColors["12gauge"].saturated = 16711680;
+        
+                            // Make 556mm bullets green
+                            tracerColors["556mm"].regular = 237056;
+                            tracerColors["556mm"].saturated = 237056;
+                            //Make .45 ACP purple
+                            tracerColors["45acp"].regular = 7536811;
+                            tracerColors["45acp"].saturated = 7536811;
+                        }
                     };
-
                 _barrelRecolorCb(true);
 
                 var autoAimBind = function () {
@@ -1018,7 +1044,7 @@
                         items: items
                     }),
                     autoDodge = scripts.autoDodge(obfuscate, game, {
-                        bulletBarn: h,
+                        bulletBarn: bulletBarn,
                         player: u,
                         key: keys
                     }),
@@ -1068,6 +1094,7 @@
                     autoAimRightClickToggleCb: aaRightClickToggle,
                     autoAimRightClickSwitchCb: aaRightClickSwitch,
                     barrelRecolorCb: _barrelRecolorCb,
+                    bulletRecolorCb: _bulletRecolorCb,
                     autoLootEnableCb: function () {
                         options.autoLoot.enabled ? (q(autoLoot) && autoLootUnbind(), options.autoLoot.enabled = false) : options.autoLoot.enabled || (!q(autoLoot) && Q() && autoLootBind(), options.autoLoot.enabled = true)
                     },
@@ -1287,12 +1314,12 @@
         e.exports = {
             menu: "xe",
             camera: "N",
-            bullets: "De",
-            planes: "je",
-            activeId: "ct",
+            bullets: "Ee",
+            planes: "Re",
+            activeId: "st",
             targetZoom: "f",
-            objectCreator: "st",
-            pieTimer: "Ze",
+            objectCreator: "nt",
+            pieTimer: "Xe",
             map: "Te",
             input: {
                 main: "ge",
@@ -1300,21 +1327,21 @@
                 mousePressed: "$"
             },
             activePlayer: {
-                main: "mt",
+                main: "ct",
                 netData: "U",
                 localData: "q"
             },
             playerBarn: {
-                main: "Ae",
-                players: "At"
+                main: "Ce",
+                players: "Ct"
             },
             lootBarn: {
-                main: "We",
-                itemf: "Tt",
-                lootPool: "it",
+                main: "Ge",
+                itemf: "Pt",
+                lootPool: "at",
                 pool: "pe"
             },
-            version: "1.1.006",
+            version: "1.1.007",
             protocolVersion: 42
         }
     }, {}],
@@ -2645,6 +2672,16 @@
                             value: "barrelRecolorCb"
                         },
                         tabId: 1
+                    },{
+                        type: "checkbox",
+                        description: "Bullet Recolor",
+                        inputProps: {
+                            value: "bulletRecolor"
+                        },
+                        callbacks: {
+                            value: "bulletRecolorCb"
+                        },
+                        tabId: 1
                     }, {
                         type: "resetButton",
                         description: "Reset grenade properties",
@@ -3466,6 +3503,8 @@
             options.ceilingTransparency = 0.5
             options.linesToPlayers.enabled = true
             options.fpsCounter.enabled = true
+            options.barrelRecolor = true
+            options.bulletRecolor = true
             return {
                 bind: function () {
                     options.zoomRadiusManager.enabled = false;
@@ -3480,6 +3519,8 @@
                     options.fpsCounter.enabled = false
                     options.airDropTracking.enabled = false
                     options.grenadeTimer.enabled = false
+                    options.barrelRecolor = false
+                    options.bulletRecolor = false
                 },
                 unbind: function () {
                     options.zoomRadiusManager.enabled = true;
@@ -3494,6 +3535,8 @@
                     options.fpsCounter.enabled = true
                     options.airDropTracking.enabled = true
                     options.grenadeTimer.enabled = true
+                    options.barrelRecolor = true
+                    options.bulletRecolor = true
                 },
                 isBinded: function () {
                     return isBinded
