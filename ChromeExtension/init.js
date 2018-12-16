@@ -687,25 +687,24 @@
                     autoSwitch: {
                         enabled: true
                     },
-                    streamerMode:{
-                        enabled:true
+                    streamerMode: {
+                        enabled: true
                     }
                 }), r.scope = options.smokeGrenadeAlpha, o.scope = function () {};
                 // **Exports**
                 var p = exports.ceee80d9.exports.Defs,
-                    mainExports = exports["989ad62a"].exports,
-                    bullets = mainExports.bullets,
-                    tracerColors = mainExports.tracerColors,
-                    u = mainExports.player,
-                    items = mainExports.items,
-                    bagSizes = mainExports.bagSizes,
-                    scopeZoomRadius = (mainExports.Input, mainExports.scopeZoomRadius.desktop),
-                    protocolVersion = mainExports.protocolVersion,
-                    y = exports.e5d16b4d.exports.$e,
-                    playerbarn = exports.a508b62a.exports.Ae,
-                    lootBarn = exports.a48f3bb2.exports.We,
-                    bulletBarn = exports.c73dee75.exports.De,
-                    uiModel = exports.d3da5587.exports.Je,
+                    bullets = exports["989ad62a"].exports.bullets,
+                    tracerColors = exports["989ad62a"].exports.tracerColors,
+                    u = exports["989ad62a"].exports.player,
+                    items = exports["989ad62a"].exports.items,
+                    bagSizes = exports["989ad62a"].exports.bagSizes,
+                    scopeZoomRadius = (exports["989ad62a"].exports.Input, exports["989ad62a"].exports.scopeZoomRadius.desktop),
+                    protocolVersion = exports["989ad62a"].exports.protocolVersion,
+                    y = exports.e5d16b4d.exports.tt,
+                    playerbarn = exports.a508b62a.exports.De,
+                    lootBarn = exports.a48f3bb2.exports.Ke,
+                    bulletBarn = exports.c73dee75.exports.Oe,
+                    uiModel = exports.d3da5587.exports.$e,
                     keys = exports["4b8d140f"].exports.Key;
 
                 exports["946c898d"].exports.Sounds.hits.player_bullet_hit_01.name = 'audio/hits/pan_bullet_hit_01.mp3';
@@ -923,19 +922,19 @@
                         }
                     }, _bulletRecolorCb = function () {
                         options.bulletRecolor = !options.bulletRecolor
-                        if (options.bulletRecolor) { 
+                        if (options.bulletRecolor) {
                             // Make 9mm bullets yellow
                             tracerColors["9mm"].regular = 16756224;
                             tracerColors["9mm"].saturated = 16756224;
-        
+
                             // Make 7.62mm bullets blue
                             tracerColors["762mm"].regular = 26367;
                             tracerColors["762mm"].saturated = 26367;
-        
+
                             // Make 12gauge bullets red
                             tracerColors["12gauge"].regular = 16711680;
                             tracerColors["12gauge"].saturated = 16711680;
-        
+
                             // Make 556mm bullets green
                             tracerColors["556mm"].regular = 237056;
                             tracerColors["556mm"].saturated = 237056;
@@ -1520,37 +1519,37 @@
                                     x: 0,
                                     y: 0
                                 }, h = 0; h < s.length; h++) s.averageTargetMousePosition.x += s[h].targetMousePosition.x, s.averageTargetMousePosition.y += s[h].targetMousePosition.y;
-								
-								
-								var chest_level = t[g[L]][n.activePlayer.netData]['chest'];
-								var chest_int = 0;
-								
-								if ("" != chest_level) {
-									chest_int = parseInt(chest_level.slice(-2), 10);
-								}
-								
-								var helmet_level = t[g[L]][n.activePlayer.netData]['helmet'];
-								var helmet_int = 0;
-								
-								if ("" != helmet_level) {
-									helmet_int = parseInt(helmet_level.slice(-2), 10);
-								}
 
-								var enemy_name = t[g[L]].nameText._text;
-								
-								enemy_name = enemy_name.replace(" Lvl: 0", "");
-								enemy_name = enemy_name.replace(" Lvl: 1", "");
-								enemy_name = enemy_name.replace(" Lvl: 2", "");
-								enemy_name = enemy_name.replace(" Lvl: 3", "");
-								enemy_name = enemy_name.replace(" Lvl: 4", "");
-								enemy_name = enemy_name.replace(" Lvl: 5", "");
-								enemy_name = enemy_name.replace(" Lvl: 6", "");
-	
-								enemy_name = enemy_name + ' Lvl: ' + ( chest_int + helmet_int );
-								
-								
+
+                            var chest_level = t[g[L]][n.activePlayer.netData]['chest'];
+                            var chest_int = 0;
+
+                            if ("" != chest_level) {
+                                chest_int = parseInt(chest_level.slice(-2), 10);
+                            }
+
+                            var helmet_level = t[g[L]][n.activePlayer.netData]['helmet'];
+                            var helmet_int = 0;
+
+                            if ("" != helmet_level) {
+                                helmet_int = parseInt(helmet_level.slice(-2), 10);
+                            }
+
+                            var enemy_name = t[g[L]].nameText._text;
+
+                            enemy_name = enemy_name.replace(" Lvl: 0", "");
+                            enemy_name = enemy_name.replace(" Lvl: 1", "");
+                            enemy_name = enemy_name.replace(" Lvl: 2", "");
+                            enemy_name = enemy_name.replace(" Lvl: 3", "");
+                            enemy_name = enemy_name.replace(" Lvl: 4", "");
+                            enemy_name = enemy_name.replace(" Lvl: 5", "");
+                            enemy_name = enemy_name.replace(" Lvl: 6", "");
+
+                            enemy_name = enemy_name + ' Lvl: ' + (chest_int + helmet_int);
+
+
                             s.averageTargetMousePosition.x /= s.length, s.averageTargetMousePosition.y /= s.length, l.targetEnemyNicknameVisibility && setPlayerNameStyle(), s.player = t[g[L]], l.targetEnemyNicknameVisibility && (s.player.nameText.visible = true, s.player.nameText.style.fontSize = 100, s.player.nameText.style.fill = "#D50000"), window.aimTarget = s.player, s.player.nameText._text = enemy_name,
-                                function() {
+                                function () {
                                     var e = s.player,
                                         t = e[n.activePlayer.netData].dir;
                                     if (e && e[n.activePlayer.netData].dir) {
@@ -1850,15 +1849,15 @@
                             ! function (n) {
                                 if (n.length)
                                     for (var e = l(), t = 0; t < n.length; t++) {
-										var i = {
-												x: e.x + n[t].intersectionOfCoordLines.x,
-												y: e.y + n[t].intersectionOfCoordLines.y
-											},
-											a = {
-												x: p(n[t].bullet.pos.x, n[t].bullet.pos.y, i.x, e.y),
-												y: p(n[t].bullet.pos.x, n[t].bullet.pos.y, e.x, i.y)
-											};
-										a.x < a.y ? Math.sign(n[t].intersectionOfCoordLines.x) < 0 ? s(o.D) : s(o.A) : Math.sign(n[t].intersectionOfCoordLines.y) < 0 ? s(o.W) : s(o.S);
+                                        var i = {
+                                                x: e.x + n[t].intersectionOfCoordLines.x,
+                                                y: e.y + n[t].intersectionOfCoordLines.y
+                                            },
+                                            a = {
+                                                x: p(n[t].bullet.pos.x, n[t].bullet.pos.y, i.x, e.y),
+                                                y: p(n[t].bullet.pos.x, n[t].bullet.pos.y, e.x, i.y)
+                                            };
+                                        a.x < a.y ? Math.sign(n[t].intersectionOfCoordLines.x) < 0 ? s(o.D) : s(o.A) : Math.sign(n[t].intersectionOfCoordLines.y) < 0 ? s(o.W) : s(o.S);
                                     }
                             }(function () {
                                 for (var t, i, o, r, s = [], p = l(), d = a.maxVisualRadius * Math.sqrt(2), u = e.scope[n.activePlayer.main], m = e.scope[n.bullets].bullets, f = 0; f < m.length; f++)
@@ -2672,7 +2671,7 @@
                             value: "barrelRecolorCb"
                         },
                         tabId: 1
-                    },{
+                    }, {
                         type: "checkbox",
                         description: "Bullet Recolor",
                         inputProps: {
