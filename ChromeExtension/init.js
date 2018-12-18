@@ -43,7 +43,8 @@
                     if (e.hasOwnProperty(a)) {
                         var o = e[a];
                         i.setAttribute("data-" + a, o)
-                    } t.appendChild(i)
+                    }
+                t.appendChild(i)
             },
             createStyle: function (n, e, t) {
                 t = t || {};
@@ -52,7 +53,8 @@
                     if (e.hasOwnProperty(o)) {
                         var r = e[o];
                         i.setAttribute("data-" + o, r)
-                    } i.sheet ? (i.innerHTML = n, i.sheet.cssText = n, a(i, {
+                    }
+                i.sheet ? (i.innerHTML = n, i.sheet.cssText = n, a(i, {
                     insertAt: t.insertAt
                 })) : i.styleSheet ? (a(i, {
                     insertAt: t.insertAt
@@ -315,14 +317,16 @@
                         c = d(s, n || {});
                     if ((c = d(l, c)).time = {}, null === c.id && (c.id = (i = c.title + c.message + c.color, btoa(encodeURIComponent(i)).replace(/=/g, ""))), 1 === c.displayMode || "once" == c.displayMode) try {
                         if (document.querySelectorAll(".iziToast#" + c.id).length > 0) return false
-                    } catch (n) {
+                    }
+                    catch (n) {
                         console.warn("[iziToast] Could not find an element with this selector: #" + c.id + ". Try to set an valid id.")
                     }
                     if (2 === c.displayMode || "replace" == c.displayMode) try {
                         p(document.querySelectorAll(".iziToast#" + c.id), function (n, e) {
                             a.hide(c, n, "replaced")
                         })
-                    } catch (n) {
+                    }
+                    catch (n) {
                         console.warn("[iziToast] Could not find an element with this selector: #" + c.id + ". Try to set an valid id.")
                     }
                     c.ref = (new Date).getTime() + Math.floor(1e7 * Math.random() + 1), e.children[c.ref] = c;
@@ -713,22 +717,6 @@
                     bullets[key].tracerWidth += 0.1;
                 });
 
-                // Make 9mm bullets yellow
-                tracerColors["9mm"].regular = 16756224;
-                tracerColors["9mm"].saturated = 16756224;
-
-                // Make 7.62mm bullets blue
-                tracerColors["762mm"].regular = 26367;
-                tracerColors["762mm"].saturated = 26367;
-
-                // Make 12gauge bullets red
-                tracerColors["12gauge"].regular = 16711680;
-                tracerColors["12gauge"].saturated = 16711680;
-
-                // Make 556mm bullets green
-                tracerColors["556mm"].regular = 237056;
-                tracerColors["556mm"].saturated = 237056;
-
                 // console.log( exports.e5d16b4d.exports );
                 // console.log( exports.a508b62a.exports );
                 // console.log( exports.a48f3bb2.exports );
@@ -738,15 +726,19 @@
                 setInterval(function () {
                     game.scope
                 }, 2e3);
-                /*
+                
                 this.console.log(exports)
                 this.console.log(options)
+				
 
-                setInterval(function() {
+				// game_scope
+                setInterval(function () {
                     //console.log(game.scope)
 
-                }, 2000)
-                //*/
+                }, 3000)
+
+                document.querySelector("#game-area-wrapper").style.cursor = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfiDBAFFDub31YtAAACvUlEQVRIx7WVz0tUURTHP3d6poI2j3CpaYsWQVPRIk2KWg24iGAEw3JWbZtFIP4P/QdiroNcTO2CFJwoxH4wuKtF4JhhqUOvcHDmvXPfOy0kG803Y1Rn9bj3nO/lne/3fA80jkkmGyc4DW8NxwGDxqcciS11OcUFrnOMNdoJ8OMSf48WLpDhmtPX0VlthXa/smVLFMhTRGgap5lq2TwbjstjKQZpSUsxeCzjcjZs2WSK042LE2R4fyac9jetRqpRNGyHbRSparRpp/0zIe/JkIgvv+OUs0FJVFUlWpHZoN/229lgxUqoqlqSbOCUuRMHMeyU7/kVqyphoXZbeqXNM1VTbfN6ZUwKNQlVK/ae75QZPvjf32WDLavq2YlaskqBuwzwlKcMcJdCsjpR86zqls0GvPu9Fw5TKbssqp7NBonP5EgChkc8wgBJconP2cCzqsuSskztV9CAs/HAV7XhRM2scWP3fJTR3e8bZm2iZkPVB76zwcBegPvnwg2rOl9zt8nFspRzq/O+6oY9F3K//sJlcVw0suGYMI8bC+AyPyY21GhcWNzJ2yGkxzk5COZT9ALyfNstMHTRVafWb+Rf8inCDOKcpGcHwADdHZ19Ch90vcKbuhdHmGOOkbqTt18qHxT66OikGzCGSVx6WvuvRkk+mteiBSo84SHQxbOR8zCzRJoyMEqGDnP14tETfNfnCf8Vq3ixsjx8GGDI3S4GqnNBm7eHnpssscTNupNLbd5coFoUd5shdqc55aznRbUkvbKHxP1NhFyflKxqXpx1Ur9YWLXLC6DdiSuQqaNRKVOu8yOXzGW6DbqAXWb1HwopXsq3Divlvx6mpuPsNhlnaGYofjND2W9p4Yr9U0v7a1P92Ytfti5pSUtRGtn6f1gsP4FdUgyxwAJDpHAPfOoQMDPMNC5tvJ2Vr9BoN8MPZ/EGbt3AhqYAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTgtMTItMTZUMDU6MjA6NTktMDU6MDB/YrSVAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE4LTEyLTE2VDA1OjIwOjU5LTA1OjAwDj8MKQAAAABJRU5ErkJggg==) 16 16, auto';
+
                 //start menu help
                 var help = this.document.getElementById("start-help")
                 help.innerHTML += `
@@ -787,13 +779,13 @@
                     X = null,
                     V = null,
                     G = false;
-                if (!(p)) return console.log("Error: Variable p not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(items)) return console.log("Error: items not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(bullets)) return console.log("Error: bullets not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(bagSizes)) return console.log("Error: bagSizes not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(playerbarn)) return console.log("Error: playerbarn not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(lootBarn)) return console.log("Error: lootBarn not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
-                if (!(scopeZoomRadius)) return console.log("Error: scopeZoomRadius not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(p)) return console.loerrorg("Error: Variable p not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(items)) return console.error("Error: items not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(bullets)) return console.error("Error: bullets not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(bagSizes)) return console.error("Error: bagSizes not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(playerbarn)) return console.error("Error: playerbarn not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(lootBarn)) return console.error("Error: lootBarn not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
+                if (!(scopeZoomRadius)) return console.error("Error: scopeZoomRadius not defined"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
                 if (!(protocolVersion === obfuscate.protocolVersion)) return console.log("Error: Protocol mismatch"), notifications.create("error", "This extension can not work with this version of the game!", "error", 2e4), false;
                 var Q = function () {
                     return !(!isset(game.scope) || !game.scope.initialized || null == game.scope[obfuscate.activePlayer.main] || null == game.scope[obfuscate.input.main] || game.scope.spectating)
@@ -801,7 +793,6 @@
                 setInterval(function () {
                     vn && !Q() ? Tn() : Q() && !G ? xn() : vn || Q() || !G || (G = false)
                 }, 500);
-
                 var filter = function (obj, filter) {
                     let key, keys = []
                     for (key in obj) {
@@ -824,6 +815,13 @@
                         p[e].img.alpha = options.particlesTransparency
                 })
                 p.stone_02.img.tint = options.particlesTransparency
+
+                Object.keys(bullets).forEach(function (e) {
+                    if (e.suppressed){
+                        e.suppressed = false
+                    }
+                })
+                p.stone_02.img.tint = options.particlesTransparency
                 var Y = y.prototype.l;
                 y.prototype.l = function () {
                         this.options || function () {
@@ -843,21 +841,21 @@
                         p[n].ceiling && p[n].ceiling.imgs.forEach(function (n) {
                             n.alpha = options.ceilingTransparency
                         })
-                    }),
-                    w = function (n) {
-                        filter(p, /tree/).forEach(function (e) {
-                            if (p[e].img)
-                                p[e].img.alpha = options.particlesTransparency
-                        })
+                    }), w = function (n) {
+                        options.particlesTransparency = n,
+                            filter(p, /tree/).forEach(function (e) {
+                                if (p[e].img)
+                                    p[e].img.alpha = n
+                            })
                         filter(p, /bush/).forEach(function (e) {
                             if (p[e].img)
-                                p[e].img.alpha = options.particlesTransparency
+                                p[e].img.alpha = n
                         })
                         filter(p, /table/).forEach(function (e) {
                             if (p[e].img)
-                                p[e].img.alpha = options.particlesTransparency
+                                p[e].img.alpha = n
                         })
-                        p.stone_02.img.tint = options.particlesTransparency
+                        p.stone_02.img.alpha = n
                     }, z = function (n) {
                         options.ceilingTransparency = n, Object.keys(p).forEach(function (e) {
                             p[e].ceiling && p[e].ceiling.imgs.forEach(function (e) {
@@ -879,6 +877,7 @@
                 var H = function () {
                     autoAim.isBinded() && options.autoAim.enabled && (autoAimUnbind(), autoAimBind())
                 };
+
                 aaNicknameVisCb = function () {
                         options.autoAim.targetEnemyNicknameVisibility = !options.autoAim.targetEnemyNicknameVisibility, autoAim.setTargetEnemyNicknameVisibility(options.autoAim.targetEnemyNicknameVisibility), H()
                     }, aaForwardFiringCoeffCb = function (n) {
@@ -920,9 +919,12 @@
                         } else {
                             p.barrel_01.img.sprite = 'map-barrel-01.img';
                         }
-                    }, _bulletRecolorCb = function () {
-                        options.bulletRecolor = !options.bulletRecolor
-                        if (options.bulletRecolor) {
+                    },
+                    _bulletRecolorCb = function (n = false) {
+                        if (!n) {
+                            options.bulletRecolor ? options.bulletRecolor = false : options.bulletRecolor = true;
+                        }
+                        if (options.bulletRecolor) { 
                             // Make 9mm bullets yellow
                             tracerColors["9mm"].regular = 16756224;
                             tracerColors["9mm"].saturated = 16756224;
@@ -938,13 +940,34 @@
                             // Make 556mm bullets green
                             tracerColors["556mm"].regular = 237056;
                             tracerColors["556mm"].saturated = 237056;
+							
                             //Make .45 ACP purple
                             tracerColors["45acp"].regular = 7536811;
                             tracerColors["45acp"].saturated = 7536811;
-                        }
+                        } else {
+                            // Make 9mm bullets default
+                            tracerColors["9mm"].regular = 16704198;
+                            tracerColors["9mm"].saturated = 16767411;
+        
+                            // Make 7.62mm bullets default
+                            tracerColors["762mm"].regular = 12965630;
+                            tracerColors["762mm"].saturated = 11257087;
+        
+                            // Make 12gauge bullets default
+                            tracerColors["12gauge"].regular = 16702684;
+                            tracerColors["12gauge"].saturated = 16702684;
+        
+                            // Make 556mm bullets default
+                            tracerColors["556mm"].regular = 11141010;
+                            tracerColors["556mm"].saturated = 11141010;
+							
+                            // Make .45 ACP default
+                            tracerColors["45acp"].regular = 15515391;
+                            tracerColors["45acp"].saturated = 15183103;
+						}
+                    
                     };
                 _barrelRecolorCb(true);
-
                 var autoAimBind = function () {
                         autoAim.bind({
                             targetEnemyNicknameVisibility: options.autoAim.targetEnemyNicknameVisibility,
@@ -1308,36 +1331,49 @@
             }
         }
     }, {}],
-    12: [function (n, e, t) {
+    12: [function (n, e, t) {//game_vars 
         "use strict";
         e.exports = {
+			// xe: o {game: r, particleBarn: l, localization: i, touch: e, inputBinds: e, …}
             menu: "xe",
+			// N: i {pos: {…}, ppu: 16, zoom: 1.132234974067752, f: 0.5785845588235294, screenWidth: 1259, …}
             camera: "N",
+			// Ee: o {bullets: Array(0)}
             bullets: "Ee",
+			// can not find planes variable
             planes: "Re",
-            activeId: "st",
+			// ct: 3058
+            activeId: "ct",
+			// f: 1
             targetZoom: "f",
-            objectCreator: "nt",
-            pieTimer: "Xe",
-            map: "Te",
+			// lt: r {idToObj: {…}, types: {…}, seenCount: 34}
+            objectCreator: "lt",
+			// Ye: i {Gt: false, dirty: false, container: e, mobileOffset: 0, clientData: {…}, …}
+            pieTimer: "Ye",
+			// Ce: s {display: {…}, width: 720, height: 720, seed: 192487212, biome: 1, …}
+            map: "Ce",
             input: {
+				// ge: e {input: o, config: e, binds: Array(36), boundKeys: {…}, menuHovered: false}
                 main: "ge",
                 input: "input",
                 mousePressed: "$"
             },
             activePlayer: {
-                main: "ct",
+				// dt: n {bodySprite: e, chestSprite: e, helmetSprite: e, backpackSprite: e, handLSprite: e, …}
+                main: "dt",
                 netData: "U",
                 localData: "q"
             },
             playerBarn: {
-                main: "Ce",
-                players: "Ct"
+				// Ie: s {it: i, It: {…}, teamInfo: {…}, teammateData: {…}}
+                main: "Ie",
+                players: "It"
             },
             lootBarn: {
-                main: "Ge",
-                itemf: "Pt",
-                lootPool: "at",
+				// He: r {rt: i, Ct: null}
+                main: "He",
+                itemf: "Ct",
+                lootPool: "rt",
                 pool: "pe"
             },
             version: "1.1.007",
@@ -1389,14 +1425,14 @@
                     return t
                 },
                 render: function () {
-                    t && e.scope.initialized && (s(), function () {
-                        var t = e.scope[n.planes].planes,
-                            a = t.length;
-                        if (a > 0) {
-                            for (var o = 0; o < a; o++) r(t[o]);
-                            t[a - 1].id != i.lastPlaneId && (i.lastPlaneId = t[a - 1].id, notifications.create("info", "Attention, the next plane is coming!", "OK", 5e3))
-                        }
-                    }())
+                    // t && e.scope.initialized && (s(), function () {
+                        // var t = e.scope[n.planes].planes,
+                            // a = t.length;
+                        // if (a > 0) {
+                            // for (var o = 0; o < a; o++) r(t[o]);
+                            // t[a - 1].id != i.lastPlaneId && (i.lastPlaneId = t[a - 1].id, notifications.create("info", "Attention, the next plane is coming!", "OK", 5e3))
+                        // }
+                    // }())
                 }
             }
         }
@@ -1454,6 +1490,48 @@
                             return !e.scope[n.input.main][n.input.input].mouseButtons["2"]
                         }
                     },
+					l_function = function (n) {
+						return !! function (n) {
+							return c_function(n.A, n.B, n.C) || c_function(n.A, n.B, n.D) || c_function(n.C, n.D, n.A) || c_function(n.C, n.D, n.B)
+						}(n) || !(p_function(n.A, n.B, n.C) * p_function(n.A, n.B, n.D) >= 0 || p_function(n.C, n.D, n.A) * p_function(n.C, n.D, n.B) >= 0)
+					},
+					c_function = function (n, e, t) {
+						return 0 == n.x * e.y + e.x * t.y + t.x * n.y - t.x * e.y - n.x * t.y - e.x * n.y && Math.min([n.x, e.x]) <= t.x && t.x <= Math.max([n.x, e.x]) && Math.min([n.y, e.y]) <= t.y && t.y <= Math.max([n.y], e.y)
+					},
+					p_function = function (n, e, t) {
+						return n.x * e.y + e.x * t.y + t.x * n.y - t.x * e.y - n.x * t.y - e.x * n.y
+					},
+					isNotCollideble = function (t) {
+						var pos = (u = e.scope[n.activePlayer.main]).pos,
+							objects = e.scope[n.objectCreator].idToObj,
+							collidableObjects = Object.keys(objects).filter(function (n) {
+								var curObj = objects[n]
+								if (typeof curObj.img == "string") {
+									// collidable elements filter
+									return void 0 !== objects[n].collidable && objects[n].collidable || !objects[n].isDoor || !objects[n].isBush || !objects[n].img.includes("stair")
+								} else {
+									return void 0 !== objects[n].collidable && objects[n].collidable
+								}
+							}, ),
+							p = [];
+						p.A = [], p.B = [], p.C = [], p.D = [], p.A.x = pos.x, p.A.y = pos.y, p.B.x = t.x, p.B.y = t.y;
+						var d = true;
+						collidableObjects.forEach(function (n, e, t) {
+							var i;
+							objects[n].layer !== u.layer || objects[n].dead || void 0 !== (i = objects[n]).img && i.img.indexOf("window") > -1 || (void 0 !== objects[n].collider && void 0 !== objects[n].collider.min && void 0 !== objects[n].collider.max ? (p.C.x = objects[n].collider.min.x, p.C.y = objects[n].collider.min.y, p.D.x = objects[n].collider.max.x, p.D.y = objects[n].collider.min.y, l_function(p) && (d = false), p.C.x = objects[n].collider.max.x, p.C.y = objects[n].collider.min.y, p.D.x = objects[n].collider.max.x, p.D.y = objects[n].collider.max.y, l_function(p) && (d = false), p.C.x = objects[n].collider.max.x, p.C.y = objects[n].collider.max.y, p.D.x = objects[n].collider.min.x, p.D.y = objects[n].collider.max.y, l_function(p) && (d = false), p.C.x = objects[n].collider.min.x, p.C.y = objects[n].collider.max.y, p.D.x = objects[n].collider.min.x, p.D.y = objects[n].collider.max.y, l_function(p) && (d = false)) : function (n, e, t, i, a, o) {
+								var r, s, l = a - t,
+									c = o - i,
+									p = l * l + c * c,
+									d = -1;
+								0 != p && (d = ((n - t) * l + (e - i) * c) / p), d < 0 ? (r = t, s = i) : d > 1 ? (r = a, s = o) : (r = t + d * l, s = i + d * c);
+								var u = n - r,
+									m = e - s;
+								return Math.sqrt(u * u + m * m)
+							}(objects[n].collider.pos.x, objects[n].collider.pos.y, p.A.x, p.A.y, p.B.x, p.B.y) <= objects[n].collider.rad && (d = false))
+						});
+						var u = e.scope[n.activePlayer.main];
+						return d;
+					},
                     h = null,
                     x = function () {
                         var n = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : null;
@@ -1535,23 +1613,15 @@
                                 helmet_int = parseInt(helmet_level.slice(-2), 10);
                             }
 
-                            var enemy_name = t[g[L]].nameText._text;
-
-                            enemy_name = enemy_name.replace(" Lvl: 0", "");
-                            enemy_name = enemy_name.replace(" Lvl: 1", "");
-                            enemy_name = enemy_name.replace(" Lvl: 2", "");
-                            enemy_name = enemy_name.replace(" Lvl: 3", "");
-                            enemy_name = enemy_name.replace(" Lvl: 4", "");
-                            enemy_name = enemy_name.replace(" Lvl: 5", "");
-                            enemy_name = enemy_name.replace(" Lvl: 6", "");
+                            var enemy_name = t[g[L]][n.activePlayer.netData].curWeapType;
 
                             enemy_name = enemy_name + ' Lvl: ' + (chest_int + helmet_int);
-
 
                             s.averageTargetMousePosition.x /= s.length, s.averageTargetMousePosition.y /= s.length, l.targetEnemyNicknameVisibility && setPlayerNameStyle(), s.player = t[g[L]], l.targetEnemyNicknameVisibility && (s.player.nameText.visible = true, s.player.nameText.style.fontSize = 100, s.player.nameText.style.fill = "#D50000"), window.aimTarget = s.player, s.player.nameText._text = enemy_name,
                                 function () {
                                     var e = s.player,
                                         t = e[n.activePlayer.netData].dir;
+									// enemy detection icon
                                     if (e && e[n.activePlayer.netData].dir) {
                                         var i = e.targetIndicator;
                                         if (!op.streamerMode.enabled) {
@@ -1671,7 +1741,7 @@
                         var n, e;
                         document.getElementById("ui-cheat-info") && (n = "ui-cheat-info", (e = document.getElementById(n)).parentNode.removeChild(e))
                     },
-                    C = function (e) {
+                    C = function (e) { // healing action
                         var t = e[n.activePlayer.netData].dir,
                             i = e.curAction.type;
                         if (e && e[n.activePlayer.netData].dir) {
@@ -1795,22 +1865,42 @@
                     },
                     render: function () {
                         var t;
-                        T(function () {
-                            var t = [];
-                            if (!e.scope[n.playerBarn.main][n.playerBarn.players][e.scope[n.activeId]]) return t;
-                            for (var i, a = e.scope[n.activeId], o = e.scope[n.playerBarn.main][n.playerBarn.players][a].teamId, r = Object.keys(e.scope[n.playerBarn.main][n.playerBarn.players]), s = e.scope[n.activePlayer.main], c = 0; c < r.length; c++) {
-                                var p = e.scope[n.objectCreator].idToObj[r[c]],
-                                    d = e.scope[n.playerBarn.main][n.playerBarn.players][r[c]];
-                                // if (l.rightClickToggle) {
-                                // var clicked = rightClickHandler()
-                                // } else {
-                                // var clicked = false
-                                // }
-                                //p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || clicked || !checkLayer(s, p) || (t[r[c]] = p))
-                                p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || !checkLayer(s, p) || (t[r[c]] = p))
-                            }
-                            return t
-                        }()), s.new && (t = s.averageTargetMousePosition, e.scope[n.input.main][n.input.input].mousePos = t)
+
+						var allow_auto_aim_if_no_collisions = false;
+						if ( 0 !== window.aimTarget && null != window.aimTarget ) {
+							var tt = window.aimTarget.pos;
+							var allow_auto_aim_if_no_collisions = isNotCollideble( tt );
+						}
+						
+						if ( allow_auto_aim_if_no_collisions ) {
+							console.log( 'no collisions' );
+						} else {
+							console.log( 'there area collisions, move to other player of disable auto aim' );
+						}
+
+						T(function () {
+							var t = [];
+							
+							if (!e.scope[n.playerBarn.main][n.playerBarn.players][e.scope[n.activeId]]) return t;
+	
+							for (var i, a = e.scope[n.activeId], o = e.scope[n.playerBarn.main][n.playerBarn.players][a].teamId, r = Object.keys(e.scope[n.playerBarn.main][n.playerBarn.players]), s = e.scope[n.activePlayer.main], c = 0; c < r.length; c++) {
+								var p = e.scope[n.objectCreator].idToObj[r[c]],
+									d = e.scope[n.playerBarn.main][n.playerBarn.players][r[c]];
+								// if (l.rightClickToggle) {
+								// var clicked = rightClickHandler()
+								// } else {
+								// var clicked = false
+								// }
+								//p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || clicked || !checkLayer(s, p) || (t[r[c]] = p))
+								//console.log( 'test' );
+								//var th = ;
+								
+								p && (l.showEnemiesActions && C(p), (i = p)[n.activePlayer.netData].dead || i[n.activePlayer.netData].downed || getTeam(a, o, d, r[c]) || !checkLayer(s, p) || (t[r[c]] = p))
+							}
+
+							return t
+						}()), s.new && (t = s.averageTargetMousePosition, e.scope[n.input.main][n.input.input].mousePos = t)
+					
                     }
                 }
             }
@@ -1876,7 +1966,8 @@
                                             bullet: e.scope[n.bullets].bullets[f],
                                             intersectionOfCoordLines: y
                                         })
-                                    } return s
+                                    }
+                                return s
                             }()), d.call(this, t)
                         }, r = true
                     },
@@ -3127,7 +3218,8 @@
                                     if (p[i].tabId === e) {
                                         var a = y(p[i]);
                                         isset(a) && t.firstChild.appendChild(a)
-                                    } n.push(t)
+                                    }
+                                n.push(t)
                             }
                             return n
                         }(),
@@ -3210,6 +3302,7 @@
                         var pos = (u = e.scope[n.activePlayer.main]).pos,
                             objects = e.scope[n.objectCreator].idToObj,
                             shootable = function (curObj) {
+								// what is this? :D
                                 if (curObj.collidable && curObj.collidable) {
                                     if (curObj.isBush != undefined && curObj.isBush) {
                                         return true
@@ -3221,9 +3314,10 @@
                             collidableObjects = Object.keys(objects).filter(function (n) {
                                 var curObj = objects[n]
                                 if (typeof curObj.img == "string") {
-                                    return void 1 == shootable(curObj) && !curObj.isDoor && !curObj.img.includes("stair")
+									// collidable elements filter
+                                    return void 0 !== objects[n].collidable && objects[n].collidable || !objects[n].isDoor || !objects[n].isBush || !objects[n].img.includes("stair")
                                 } else {
-                                    return void 1 == shootable(curObj)
+                                    return void 0 !== objects[n].collidable && objects[n].collidable
                                 }
                             }, ),
                             p = [];
