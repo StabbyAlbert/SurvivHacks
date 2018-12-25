@@ -92,6 +92,10 @@
 		                    	from: /console.log=i,/g,
                                 to: "i(\"Nice try. ;) --zbot473\");\n"
                             },  {
+				name: "WS Fix",
+		                    	from: /this\.ws\.send\(e\.getBuffer\(\)\)/g,
+                                to: "if(e!=null && e.getBuffer() != null && e.getBuffer().length!=10){this.ws.send(e.getBuffer())}"
+                            },  {			    
                                 name: "Window onerror",
                                 from: /window.onerror/g,
                                 to: "window.onrandomvariable"
